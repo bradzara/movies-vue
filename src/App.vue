@@ -14,7 +14,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div id="app">
     <Header />
     <Content />
     <Footer />
