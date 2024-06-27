@@ -1,16 +1,22 @@
 <script>
 import axios from "axios";
 import MoviesIndex from "./MoviesIndex.vue";
+import MoviesShow from "./MoviesShow.vue";
+import Modal from "./Modal.vue";
 import backgroundImage from "/Users/bradleyzara/Desktop/unnamed.png";
 
 export default {
   components: {
     MoviesIndex,
+    MoviesShow,
+    Modal,
   },
 
   data: function () {
       return {
         movies: [],
+        currentMovie: {},
+        isMoviesShowVisible: false,
         randomMovie: null,
         backgroundImage: backgroundImage,
       };
@@ -27,6 +33,14 @@ export default {
       });
     },
 
+    handleShowMovie: function (movie) {
+      console.log("handleShowMovie", movie);
+      this.currentMovie = movie;
+      this.isMoviesShowVisible = true;
+    },
+    handleClose: function () {
+      this.isMoviesShowVisible = false;
+    },
     generateRandomMovie: function () {
       if (this.movies.length === 0 ) {
         console.warn("No movies available to choose from.");
@@ -44,6 +58,12 @@ export default {
   <div id="app">
     <h1>Random Movie Generator</h1>
     <button @click="generateRandomMovie">Generate Random Movie</button>
+    <!-- <p v-if="randomMovie">{{ randomMovie }}</p>  -->
+    <!-- WILL USE ABOVE CODE WHEN RANDOMIZER WORKS -->
+   <MoviesIndex v-bind:movies="movies" v-on:showMovie="handleShowMovie" />
+   <Modal v-bind:show="isMoviesShowVisible" v-on:close="handleClose">
+      <MoviesShow v-bind:movie="currentMovie" />
+    </Modal>
     <div v-if="randomMovie" class="movie-card" > 
       <h3>{{ randomMovie.name }}</h3>
       <img :src="randomMovie.image_url" alt="Movie poster" class="resized-image">
@@ -57,6 +77,9 @@ export default {
     </div>
   </div>
 </template>
+
+
+
 
 <style>
 html, body {
