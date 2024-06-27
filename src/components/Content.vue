@@ -1,6 +1,7 @@
 <script>
 import axios from "axios";
 import MoviesIndex from "./MoviesIndex.vue";
+import backgroundImage from "/Users/bradleyzara/Desktop/unnamed.png";
 
 export default {
   components: {
@@ -10,6 +11,8 @@ export default {
   data: function () {
       return {
         movies: [],
+        randomMovie: null,
+        backgroundImage: backgroundImage,
       };
     },
 
@@ -23,6 +26,15 @@ export default {
         this.movies = response.data;
       });
     },
+
+    generateRandomMovie: function () {
+      if (this.movies.length === 0 ) {
+        console.warn("No movies available to choose from.");
+        return;
+      }
+      const randomIndex = Math.floor(Math.random() * this.movies.length);
+      this.randomMovie = this.movies[randomIndex];
+    }
   },
 };
 
@@ -32,9 +44,17 @@ export default {
   <div id="app">
     <h1>Random Movie Generator</h1>
     <button @click="generateRandomMovie">Generate Random Movie</button>
-    <!-- <p v-if="randomMovie">{{ randomMovie }}</p>  -->
-    <!-- WILL USE ABOVE CODE WHEN RANDOMIZER WORKS -->
-    <MoviesIndex v-bind:movies="movies"/>
+    <div v-if="randomMovie" class="movie-card" > 
+      <h3>{{ randomMovie.name }}</h3>
+      <img :src="randomMovie.image_url" alt="Movie poster" class="resized-image">
+      <p>Release Year: {{ randomMovie.release_year }}</p>
+      <p>Genre: {{ randomMovie.genre_id }}</p>
+      <p>Run Time: {{ randomMovie.run_time }} minutes</p>
+      <p>Reviews: {{ randomMovie.review_id }}</p>
+    </div>
+    <div v-if="!randomMovie" class="movies-index">
+      <MoviesIndex :movies="movies" />
+    </div>
   </div>
 </template>
 
@@ -44,7 +64,7 @@ html, body {
   padding: 0;
   height: 100%;
   width: 100%;
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-x: hidden;
 }
 
 
@@ -53,7 +73,7 @@ html, body {
   text-align: center;
   margin-top: 0;
   padding: 0;
-  background: url('https://lh3.googleusercontent.com/gg/AJIvXiuAOFMdgn2Y5yPfia4wNQxZ6Fx7ZTEDyBYU3jSGBLF_ir6bh-MoJiZ84uxedsPJugYFqj0Mgn5AiMYciyDHc9mrDKeGTZjR4WaAh4_tJ-uEYLlfJJ4JmWeIHse37wyMgqzZY5NcMCzajfRKSVGYi_ktt_2TjxdC56KysWJ_pnEtpIIrhQtxhGwXFJY5OLlaUN6WinyxGxy1bwxVK3G2S6KhvQHlQVvm6W5dSkKWt6mJe1VFmB3ap_4p_v6kcWhgxj7D-ZMVygDHEWTpix4pNoUjgUefP8QKu-YHr4znZ8jdWndR17ymPrlj6ifT923HeoCPQemss-mZ90lLxhFMoPk8') no-repeat fixed;
+  background: url(/Users/bradleyzara/Desktop/unnamed.png) no-repeat fixed;
   background-size: cover;
   color: #333;
   display: flex;
@@ -63,6 +83,7 @@ html, body {
 }
 
 h1 {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   font-size: 2.5rem;
   color: #ffffff;
   margin-bottom: 20px;
