@@ -1,15 +1,21 @@
 <script>
 import axios from "axios";
 import MoviesIndex from "./MoviesIndex.vue";
+import MoviesShow from "./MoviesShow.vue";
+import Modal from "./Modal.vue";
 
 export default {
   components: {
     MoviesIndex,
+    MoviesShow,
+    Modal,
   },
 
   data: function () {
       return {
         movies: [],
+        currentMovie: {},
+        isMoviesShowVisible: false,
       };
     },
 
@@ -23,6 +29,15 @@ export default {
         this.movies = response.data;
       });
     },
+
+    handleShowMovie: function (movie) {
+      console.log("handleShowMovie", movie);
+      this.currentMovie = movie;
+      this.isMoviesShowVisible = true;
+    },
+    handleClose: function () {
+      this.isMoviesShowVisible = false;
+    },
   },
 };
 
@@ -34,9 +49,15 @@ export default {
     <button @click="generateRandomMovie">Generate Random Movie</button>
     <!-- <p v-if="randomMovie">{{ randomMovie }}</p>  -->
     <!-- WILL USE ABOVE CODE WHEN RANDOMIZER WORKS -->
-    <MoviesIndex v-bind:movies="movies"/>
+   <MoviesIndex v-bind:movies="movies" v-on:showMovie="handleShowMovie" />
+   <Modal v-bind:show="isMoviesShowVisible" v-on:close="handleClose">
+      <MoviesShow v-bind:movie="currentMovie" />
+    </Modal>
   </div>
 </template>
+
+
+
 
 <style>
 html, body {
